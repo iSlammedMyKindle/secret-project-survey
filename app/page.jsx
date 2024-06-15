@@ -29,7 +29,7 @@ export default function Home() {
         
         <ol style="list-style:list-item">
           <li>They must be safe for work</li>
-          <li>Not have any personal information</li>
+          <li>Not have any personal information (phone numbers, credit card number, social security number [bruh don't do that]</li>
           <li>Are ok to be public & telivised (secrets you don't want people knowing will be thrown out!)</li>
         </ol>
         </p>
