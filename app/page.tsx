@@ -5,6 +5,8 @@ import {Model} from "survey-core";
 import {Survey} from "survey-react-ui";
 import 'survey-core/defaultV2.min.css';
 import {FlatDark} from 'survey-core/themes/flat-dark';
+import { useCallback } from "react";
+import sendDataToCsv from "./saveResults";
 
 export default function Home() {
 
@@ -47,6 +49,7 @@ export default function Home() {
       {
         type:"paneldynamic",
         title:'Insert facts!',
+        name: 'insert-facts',
         description:'They can be about yourself, something you like, something random, etc. Place in as many as you like. To add another, select "add new"',
         panelCount:1,
         minPanelCount:1,
@@ -100,19 +103,27 @@ export default function Home() {
         name: "thats-it",
         html: "<h3>That's it, thanks!</h3>When you click \"complete\", entries will be submitted. I'll take a look at each one, only a few will be chosen!",
         visibleIf: "{finalsay[0]} = 'I freaken understand'"
+      },
+      {
+        type: "text",
+        name: "last-words",
+        title: "Any Last words before sending it off?",
+        visibleIf: "{finalsay[0]} = 'I freaken understand'"
       }
     ]
   });
 
   survey.applyTheme(FlatDark);
-
-  // survey.onValueChanged.add((survey, {name, question, value})=>{
-  //   console.warn('stuff', name, question, value, survey);
-  // });
+  survey.onComplete.add(useCallback(sender=>{
+    sendDataToCsv(sender.data);
+  }))
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Image src="/secretProjectSurvey.png" width={1500 * .6} height={500 * .6} alt="Secret project survey"/>
       <Survey model={survey}/>
     </main>
   );
 }
+
+console.log("%cMisfit when he opens the JS console to discover this secret message -> https://i.imgur.com/zSiae14.png", "color:lime");
