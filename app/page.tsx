@@ -1,113 +1,118 @@
+"use client";
+
 import Image from "next/image";
+import {Model} from "survey-core";
+import {Survey} from "survey-react-ui";
+import 'survey-core/defaultV2.min.css';
+import {FlatDark} from 'survey-core/themes/flat-dark';
 
 export default function Home() {
+
+  const survey = new Model({
+    elements:[
+      {
+        type: "html",
+        name: "welcome",
+        html: `
+        <style>
+        p{
+          margin-bottom:15px;
+          border-bottom: 2px solid #343434;
+        }
+        </style>
+        <h3>Welcome!</h3>
+        <p>Greetings traveler... Thank you for stopping by! You've come far & wide to finally figure out what this project is all about...</p>
+        <p>The time draws near for an answer... however, there is still much to be done. In the meantime, for this project to be <i>full</i>, I need <i>your</i> help.</p>
+        <p>Your mission, should you choose to accept it, is to <b>Submit some fun facts!</b> These fun facts must follow these guidelines:
+        
+        <ol style="list-style:list-item">
+          <li>They must be safe for work</li>
+          <li>Not have any personal information</li>
+          <li>Are ok to be public & telivised (secrets you don't want people knowing will be thrown out!)</li>
+        </ol>
+        </p>
+        
+        <p>Of all information sent to this form, I will select a total of <b>20</b> to be used. For what purpose you ask? Well... that remains to be seen, at least by you... <i>hehehAHAHAHAHAHAHA!</i></p>
+        
+        <p>One last thing, this information is being sent on a self-hosted server, it's not going anywhere else other than my personal devices or machines. For the nerds, I'll release the source code of this page later on github so you can poke at the insides.</p>
+        <p>With that out of the way, and if you accept the challenge, type away!</p>`,
+      },
+      {
+        type:'text',
+        title:'Discord username',
+        isRequired: true,
+        name:'discorduser',
+        description:"First things first, what's your discord username?! (e.g islammedmykindle)"
+      },
+      {
+        type:"paneldynamic",
+        title:'Insert facts!',
+        description:'They can be about yourself, something you like, something random, etc. Place in as many as you like. To add another, select "add new"',
+        panelCount:1,
+        minPanelCount:1,
+        maxPanelCount:10,
+        templateElements:[
+          {
+            name:'fact',
+            type: 'text',
+            title:'Insert a fact!',
+            isRequired: true
+          }
+        ]
+      },
+      {
+        type: "checkbox",
+        name: "fun",
+        title: "Checkbox of Fun",
+        description: "It is acknowledged that facts submitted on this form are purely for fun, and DO NOT contain sensitive information. Stuff that's too personal will be taken out",
+        choices: "They are just for fun, promise",
+        isRequired: true
+      },
+      {
+        type: "checkbox",
+        name: "no-turning-back",
+        title: "Checkbox of No turning back",
+        description: "It is acknowledged that you can't un-submit this form! However, you can contact me on discord if you want something removed.",
+        choices: "Got it",
+        isRequired: true,
+        visibleIf: "{fun[0]} = 'They are just for fun, promise'"
+      },
+      {
+        type: "checkbox",
+        name: "affirmation",
+        title: "Checkbox of Affirmation for telivisation",
+        description: "It is acknowledged that entries of this form might be televised on mediums such as twitch. (possibly other places) If entries wern't made for that, turn back and make changes!",
+        choices: "I am good with this stuff going out in the wild",
+        isRequired: true,
+        visibleIf: "{no-turning-back[0]} = 'Got it'"
+      },
+      {
+        type: "checkbox",
+        name: "finalsay",
+        title: "Checkbox of Final say",
+        description: "It is acknowledged that items may need to be modified if they are considered to be used in the secret project, but are not safe for work, or contain profanity.",
+        choices: "I freaken understand",
+        isRequired: true,
+        visibleIf: "{affirmation[0]} = 'I am good with this stuff going out in the wild'"
+      },
+      {
+        type: "html",
+        name: "thats-it",
+        html: "<h3>That's it, thanks!</h3>When you click \"complete\", entries will be submitted. I'll take a look at each one, only a few will be chosen!",
+        visibleIf: "{finalsay[0]} = 'I freaken understand'"
+      }
+    ]
+  });
+
+  survey.applyTheme(FlatDark);
+
+  // survey.onValueChanged.add((survey, {name, question, value})=>{
+  //   console.warn('stuff', name, question, value, survey);
+  // });
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <Survey model={survey}/>
     </main>
   );
 }
